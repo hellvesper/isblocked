@@ -19,9 +19,6 @@ $http_worker = new Worker("http://0.0.0.0:8081");
 // 4 processes
 $http_worker->count = 1;
 
-
-$db_lock = false;
-
 $time_interval = 12 * 60 * 60; // 12 hours
 
 $db_fill = function () {
@@ -38,7 +35,7 @@ $db_fill = function () {
     else print "Error on download file \n";
 };
 
-$http_worker->onWorkerStart = function (Worker $http_worker) use (&$db_lock, $time_interval, $db_fill) {
+$http_worker->onWorkerStart = function (Worker $http_worker) use ($time_interval, $db_fill) {
     print "\nWorker Started: $http_worker->id  \n";
 
     global $db;
