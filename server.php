@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: vesper
- * Date: 30/04/2018
- * Time: 18:11
- */
 
 require __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/db_update.php';
@@ -15,7 +9,6 @@ use Workerman\Lib\Timer;
 
 Worker::$eventLoopClass = '\Workerman\Events\Ev';
 Worker::$stdoutFile = __DIR__ . '/stdout.log';
-//Worker::$stdoutFile = '/dev/stdout';
 
 /*
  * HTTP Worker
@@ -33,7 +26,7 @@ $time_interval = 12 * 60 * 60; // 12 hours
 
 $db_fill = function () {
     global $db;
-    print "Donwloading dump \n";
+    print "Downloading dump \n";
     $file = file_get_contents('https://raw.githubusercontent.com/zapret-info/z-i/master/dump.csv');
     print "Processing dump file \n";
     $time = time();
@@ -46,15 +39,11 @@ $db_fill = function () {
 };
 
 $http_worker->onWorkerStart = function (Worker $http_worker) use (&$db_lock, $time_interval, $db_fill) {
-//    $time_interval = 60;
     print "\nWorker Started: $http_worker->id  \n";
 
     global $db;
 
     $db = new SQLite3(":memory:");
-    $db_lock = true;
-    $db_lock = false;
-//    db_update($db);
     $db_fill();
 
     $timer = Timer::add($time_interval, $db_fill);
@@ -92,7 +81,6 @@ $http_worker->onMessage = function(Workerman\Connection\ConnectionInterface $con
     }
 
 
-//    $ip = '91.108.8.0/22';
     print "ip: $ip \n";
     $r = ip_tools($ip);
     if ($db instanceof SQLite3) {
